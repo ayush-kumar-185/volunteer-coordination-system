@@ -1,0 +1,502 @@
+[
+  {
+    "id": "need_1",
+    "timestamp": "2026-03-05T05:13:00.076Z",
+    "location": "Hauz Khas, Block G",
+    "category": "Water",
+    "urgency": 5,
+    "description": "The sanitation is really bad here. Need elecricity fix ASAP!",
+    "people_affected": 98,
+    "status": "open"
+  },
+  {
+    "id": "need_2",
+    "timestamp": "2026-03-19T05:47:13.622Z",
+    "location": "Lajpat Nagar, Block G",
+    "category": "Health",
+    "urgency": 10,
+    "description": "The roads is really bad here. Need woter fix ASAP!",
+    "people_affected": 255,
+    "status": "open"
+  },
+  {
+    "id": "need_3",
+    "timestamp": "2026-03-25T08:21:42.479Z",
+    "location": "Hauz Khas, Block B",
+    "category": "Water",
+    "urgency": 9,
+    "description": "The water is really bad here. Need streat fix ASAP!",
+    "people_affected": 376,
+    "status": "open"
+  },
+  {
+    "id": "need_4",
+    "timestamp": "2026-02-11T14:12:31.747Z",
+    "location": "Janakpuri, Block I",
+    "category": "Roads",
+    "urgency": 10,
+    "description": "The other is really bad here. Need elecricity fix ASAP!",
+    "people_affected": 417,
+    "status": "open"
+  },
+  {
+    "id": "need_5",
+    "timestamp": "2026-01-02T07:00:26.862Z",
+    "location": "Vasant Kunj, Block B",
+    "category": "Water",
+    "urgency": 9,
+    "description": "The sanitation is really bad here. Need plz fix ASAP!",
+    "people_affected": 327,
+    "status": "open"
+  },
+  {
+    "id": "need_6",
+    "timestamp": "2026-04-18T19:22:15.583Z",
+    "location": "Saket, Block G",
+    "category": "Health",
+    "urgency": 6,
+    "description": "The roads is really bad here. Need elecricity fix ASAP!",
+    "people_affected": 99,
+    "status": "open"
+  },
+  {
+    "id": "need_7",
+    "timestamp": "2026-03-01T18:11:21.596Z",
+    "location": "Lajpat Nagar, Block B",
+    "category": "Electricity",
+    "urgency": 9,
+    "description": "The health is really bad here. Need borken fix ASAP!",
+    "people_affected": 128,
+    "status": "open"
+  },
+  {
+    "id": "need_8",
+    "timestamp": "2026-02-01T02:11:41.089Z",
+    "location": "Saket, Block J",
+    "category": "Health",
+    "urgency": 3,
+    "description": "The sanitation is really bad here. Need borken fix ASAP!",
+    "people_affected": 311,
+    "status": "open"
+  },
+  {
+    "id": "need_9",
+    "timestamp": "2026-02-02T10:32:49.335Z",
+    "location": "Janakpuri, Block J",
+    "category": "Roads",
+    "urgency": 6,
+    "description": "The electricity is really bad here. Need plz fix ASAP!",
+    "people_affected": 97,
+    "status": "open"
+  },
+  {
+    "id": "need_10",
+    "timestamp": "2026-03-29T10:19:53.470Z",
+    "location": "Janakpuri, Block E",
+    "category": "Water",
+    "urgency": 7,
+    "description": "The health is really bad here. Need plz fix ASAP!",
+    "people_affected": 100,
+    "status": "open"
+  },
+  {
+    "id": "need_11",
+    "timestamp": "2026-04-12T07:03:37.808Z",
+    "location": "Vasant Kunj, Block G",
+    "category": "Roads",
+    "urgency": 3,
+    "description": "The other is really bad here. Need help fix ASAP!",
+    "people_affected": 105,
+    "status": "open"
+  },
+  {
+    "id": "need_12",
+    "timestamp": "2026-02-13T07:38:34.574Z",
+    "location": "Lajpat Nagar, Block D",
+    "category": "Roads",
+    "urgency": 10,
+    "description": "The electricity is really bad here. Need broken fix ASAP!",
+    "people_affected": 364,
+    "status": "open"
+  },
+  {
+    "id": "need_13",
+    "timestamp": "2026-02-19T17:27:27.231Z",
+    "location": "Rohini, Block D",
+    "category": "Roads",
+    "urgency": 1,
+    "description": "The roads is really bad here. Need plz fix ASAP!",
+    "people_affected": 255,
+    "status": "open"
+  },
+  {
+    "id": "need_14",
+    "timestamp": "2025-12-31T16:28:20.853Z",
+    "location": "Dwarka, Block C",
+    "category": "Sanitation",
+    "urgency": 2,
+    "description": "The electricity is really bad here. Need help fix ASAP!",
+    "people_affected": 70,
+    "status": "open"
+  },
+  {
+    "id": "need_15",
+    "timestamp": "2026-01-03T00:41:14.292Z",
+    "location": "Rohini, Block C",
+    "category": "Electricity",
+    "urgency": 8,
+    "description": "The roads is really bad here. Need streat fix ASAP!",
+    "people_affected": 228,
+    "status": "open"
+  },
+  {
+    "id": "need_16",
+    "timestamp": "2026-02-04T05:57:55.005Z",
+    "location": "Dwarka, Block G",
+    "category": "Electricity",
+    "urgency": 6,
+    "description": "The health is really bad here. Need plz fix ASAP!",
+    "people_affected": 212,
+    "status": "open"
+  },
+  {
+    "id": "need_17",
+    "timestamp": "2026-04-15T14:19:38.918Z",
+    "location": "Dwarka, Block G",
+    "category": "Sanitation",
+    "urgency": 7,
+    "description": "The water is really bad here. Need broken fix ASAP!",
+    "people_affected": 53,
+    "status": "open"
+  },
+  {
+    "id": "need_18",
+    "timestamp": "2026-03-03T11:26:42.036Z",
+    "location": "Lajpat Nagar, Block A",
+    "category": "Roads",
+    "urgency": 6,
+    "description": "The health is really bad here. Need help fix ASAP!",
+    "people_affected": 504,
+    "status": "open"
+  },
+  {
+    "id": "need_19",
+    "timestamp": "2026-01-28T00:35:09.622Z",
+    "location": "Dwarka, Block F",
+    "category": "Health",
+    "urgency": 1,
+    "description": "The other is really bad here. Need plz fix ASAP!",
+    "people_affected": 277,
+    "status": "open"
+  },
+  {
+    "id": "need_20",
+    "timestamp": "2026-03-26T06:09:15.845Z",
+    "location": "Lajpat Nagar, Block E",
+    "category": "Water",
+    "urgency": 3,
+    "description": "The electricity is really bad here. Need elecricity fix ASAP!",
+    "people_affected": 32,
+    "status": "open"
+  },
+  {
+    "id": "need_21",
+    "timestamp": "2026-02-20T04:18:35.554Z",
+    "location": "Dwarka, Block G",
+    "category": "Water",
+    "urgency": 10,
+    "description": "The sanitation is really bad here. Need woter fix ASAP!",
+    "people_affected": 119,
+    "status": "open"
+  },
+  {
+    "id": "need_22",
+    "timestamp": "2026-04-22T10:48:52.793Z",
+    "location": "Rohini, Block B",
+    "category": "Health",
+    "urgency": 5,
+    "description": "The sanitation is really bad here. Need help fix ASAP!",
+    "people_affected": 148,
+    "status": "open"
+  },
+  {
+    "id": "need_23",
+    "timestamp": "2026-03-26T17:32:31.227Z",
+    "location": "Hauz Khas, Block B",
+    "category": "Roads",
+    "urgency": 7,
+    "description": "The other is really bad here. Need broken fix ASAP!",
+    "people_affected": 347,
+    "status": "open"
+  },
+  {
+    "id": "need_24",
+    "timestamp": "2026-03-19T22:22:01.250Z",
+    "location": "Rohini, Block A",
+    "category": "Sanitation",
+    "urgency": 3,
+    "description": "The water is really bad here. Need woter fix ASAP!",
+    "people_affected": 32,
+    "status": "open"
+  },
+  {
+    "id": "need_25",
+    "timestamp": "2026-04-03T12:26:21.349Z",
+    "location": "Rohini, Block J",
+    "category": "Health",
+    "urgency": 4,
+    "description": "The water is really bad here. Need elecricity fix ASAP!",
+    "people_affected": 50,
+    "status": "open"
+  },
+  {
+    "id": "need_26",
+    "timestamp": "2026-03-26T11:11:31.834Z",
+    "location": "Vasant Kunj, Block D",
+    "category": "Roads",
+    "urgency": 8,
+    "description": "The health is really bad here. Need broken fix ASAP!",
+    "people_affected": 38,
+    "status": "open"
+  },
+  {
+    "id": "need_27",
+    "timestamp": "2026-03-01T00:32:46.927Z",
+    "location": "Dwarka, Block F",
+    "category": "Other",
+    "urgency": 8,
+    "description": "The sanitation is really bad here. Need elecricity fix ASAP!",
+    "people_affected": 413,
+    "status": "open"
+  },
+  {
+    "id": "need_28",
+    "timestamp": "2026-01-24T02:05:35.513Z",
+    "location": "Karol Bagh, Block I",
+    "category": "Other",
+    "urgency": 7,
+    "description": "The electricity is really bad here. Need streat fix ASAP!",
+    "people_affected": 303,
+    "status": "open"
+  },
+  {
+    "id": "need_29",
+    "timestamp": "2026-02-22T11:32:21.977Z",
+    "location": "Janakpuri, Block F",
+    "category": "Roads",
+    "urgency": 7,
+    "description": "The electricity is really bad here. Need elecricity fix ASAP!",
+    "people_affected": 98,
+    "status": "open"
+  },
+  {
+    "id": "need_30",
+    "timestamp": "2026-01-24T06:23:46.490Z",
+    "location": "Rohini, Block B",
+    "category": "Electricity",
+    "urgency": 3,
+    "description": "The electricity is really bad here. Need borken fix ASAP!",
+    "people_affected": 219,
+    "status": "open"
+  },
+  {
+    "id": "need_31",
+    "timestamp": "2026-02-18T14:45:02.838Z",
+    "location": "Rohini, Block I",
+    "category": "Health",
+    "urgency": 1,
+    "description": "The electricity is really bad here. Need broken fix ASAP!",
+    "people_affected": 198,
+    "status": "open"
+  },
+  {
+    "id": "need_32",
+    "timestamp": "2026-02-28T01:04:53.363Z",
+    "location": "Dwarka, Block J",
+    "category": "Other",
+    "urgency": 8,
+    "description": "The roads is really bad here. Need broken fix ASAP!",
+    "people_affected": 114,
+    "status": "open"
+  },
+  {
+    "id": "need_33",
+    "timestamp": "2026-02-24T09:51:42.763Z",
+    "location": "Karol Bagh, Block G",
+    "category": "Other",
+    "urgency": 7,
+    "description": "The water is really bad here. Need woter fix ASAP!",
+    "people_affected": 207,
+    "status": "open"
+  },
+  {
+    "id": "need_34",
+    "timestamp": "2026-02-08T03:14:31.898Z",
+    "location": "Rohini, Block B",
+    "category": "Water",
+    "urgency": 7,
+    "description": "The electricity is really bad here. Need broken fix ASAP!",
+    "people_affected": 13,
+    "status": "open"
+  },
+  {
+    "id": "need_35",
+    "timestamp": "2026-03-17T21:03:28.312Z",
+    "location": "Dwarka, Block G",
+    "category": "Water",
+    "urgency": 2,
+    "description": "The other is really bad here. Need broken fix ASAP!",
+    "people_affected": 125,
+    "status": "open"
+  },
+  {
+    "id": "need_36",
+    "timestamp": "2026-01-15T08:11:54.083Z",
+    "location": "Dwarka, Block C",
+    "category": "Electricity",
+    "urgency": 8,
+    "description": "The sanitation is really bad here. Need help fix ASAP!",
+    "people_affected": 150,
+    "status": "open"
+  },
+  {
+    "id": "need_37",
+    "timestamp": "2026-02-18T14:15:48.381Z",
+    "location": "Saket, Block B",
+    "category": "Water",
+    "urgency": 10,
+    "description": "The roads is really bad here. Need elecricity fix ASAP!",
+    "people_affected": 376,
+    "status": "open"
+  },
+  {
+    "id": "need_38",
+    "timestamp": "2026-01-20T16:22:29.969Z",
+    "location": "Vasant Kunj, Block J",
+    "category": "Roads",
+    "urgency": 1,
+    "description": "The other is really bad here. Need help fix ASAP!",
+    "people_affected": 263,
+    "status": "open"
+  },
+  {
+    "id": "need_39",
+    "timestamp": "2026-02-19T22:59:33.890Z",
+    "location": "Dwarka, Block H",
+    "category": "Electricity",
+    "urgency": 10,
+    "description": "The electricity is really bad here. Need help fix ASAP!",
+    "people_affected": 303,
+    "status": "open"
+  },
+  {
+    "id": "need_40",
+    "timestamp": "2026-04-16T21:46:20.349Z",
+    "location": "Lajpat Nagar, Block H",
+    "category": "Other",
+    "urgency": 2,
+    "description": "The roads is really bad here. Need elecricity fix ASAP!",
+    "people_affected": 372,
+    "status": "open"
+  },
+  {
+    "id": "need_41",
+    "timestamp": "2026-02-05T14:54:38.107Z",
+    "location": "Lajpat Nagar, Block C",
+    "category": "Sanitation",
+    "urgency": 4,
+    "description": "The roads is really bad here. Need help fix ASAP!",
+    "people_affected": 475,
+    "status": "open"
+  },
+  {
+    "id": "need_42",
+    "timestamp": "2026-04-03T14:36:46.989Z",
+    "location": "Lajpat Nagar, Block D",
+    "category": "Sanitation",
+    "urgency": 5,
+    "description": "The roads is really bad here. Need streat fix ASAP!",
+    "people_affected": 38,
+    "status": "open"
+  },
+  {
+    "id": "need_43",
+    "timestamp": "2026-01-07T16:47:26.822Z",
+    "location": "Vasant Kunj, Block G",
+    "category": "Other",
+    "urgency": 9,
+    "description": "The roads is really bad here. Need plz fix ASAP!",
+    "people_affected": 401,
+    "status": "open"
+  },
+  {
+    "id": "need_44",
+    "timestamp": "2026-02-26T18:27:18.126Z",
+    "location": "Rohini, Block J",
+    "category": "Roads",
+    "urgency": 6,
+    "description": "The roads is really bad here. Need plz fix ASAP!",
+    "people_affected": 275,
+    "status": "open"
+  },
+  {
+    "id": "need_45",
+    "timestamp": "2026-02-07T10:03:05.599Z",
+    "location": "Lajpat Nagar, Block H",
+    "category": "Electricity",
+    "urgency": 2,
+    "description": "The roads is really bad here. Need streat fix ASAP!",
+    "people_affected": 121,
+    "status": "open"
+  },
+  {
+    "id": "need_46",
+    "timestamp": "2026-01-07T04:16:55.597Z",
+    "location": "Saket, Block E",
+    "category": "Electricity",
+    "urgency": 8,
+    "description": "The roads is really bad here. Need help fix ASAP!",
+    "people_affected": 446,
+    "status": "open"
+  },
+  {
+    "id": "need_47",
+    "timestamp": "2026-03-13T18:25:14.635Z",
+    "location": "Saket, Block A",
+    "category": "Roads",
+    "urgency": 6,
+    "description": "The health is really bad here. Need help fix ASAP!",
+    "people_affected": 430,
+    "status": "open"
+  },
+  {
+    "id": "need_48",
+    "timestamp": "2026-01-27T02:50:36.883Z",
+    "location": "Karol Bagh, Block E",
+    "category": "Health",
+    "urgency": 6,
+    "description": "The sanitation is really bad here. Need woter fix ASAP!",
+    "people_affected": 345,
+    "status": "open"
+  },
+  {
+    "id": "need_49",
+    "timestamp": "2026-04-16T05:03:02.575Z",
+    "location": "Dwarka, Block J",
+    "category": "Electricity",
+    "urgency": 1,
+    "description": "The water is really bad here. Need streat fix ASAP!",
+    "people_affected": 161,
+    "status": "open"
+  },
+  {
+    "id": "need_50",
+    "timestamp": "2026-03-20T01:50:37.675Z",
+    "location": "Dwarka, Block J",
+    "category": "Health",
+    "urgency": 5,
+    "description": "The other is really bad here. Need plz fix ASAP!",
+    "people_affected": 290,
+    "status": "open"
+  }
+]
