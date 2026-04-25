@@ -12,6 +12,8 @@ const authRoutes = require('./routes/auth')
 const matchesRouter = require('./routes/matches')
 const ingestWhatsappRoutes=require('./routes/ingestWhatsapp')
 const dispatchRouter = require('./routes/dispatch')
+const volunteerRouter=require('./routes/volunteers')
+const volunteerRespondRoute=require('./routes/volunteerRespond')
 
 const app = express()
 
@@ -25,6 +27,8 @@ app.use('/api/ingest/whatsapp', ingestWhatsappRoutes)
 app.use('/api/needs/:id/matches', matchesRouter)
 app.use('/api/needs/:id', dispatchRouter)
 app.use('/api/needs', needsRoutes)
+app.use('/api/volunteers', volunteerRouter)
+app.use('/api/volunteer/respond', volunteerRespondRoute)
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date() })

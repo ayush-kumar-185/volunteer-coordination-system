@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router({ mergeParams: true })
 const pool = require('../db')
+const { sendDispatchSMS } = require('../services/notify')
 
 // POST /api/needs/:id/dispatch — assign a volunteer to a need
 router.post('/dispatch', async (req, res) => {
@@ -49,9 +50,20 @@ router.post('/dispatch', async (req, res) => {
     const volunteer = volCheck.rows[0]
     const need = needCheck.rows[0]
 
+    const smsResult = await sendDispatchSMS(
+      { name: volunteer.name, phone: volunteer.phone },
+      { 
+        category: need.category,
+        location_text: need.location_text,
+        urgency_score: need.urgency_score,
+        people_affected: need.people_affected,
+        description: need.description
+      }
+    )
+
     res.json({
       success: true,
-      message: `${volunteer.name} has been assigned to this need`,
+      message: `${volunteer.name} has been assigned and notified via SMS`,
       data: {
         need_id: id,
         volunteer_id,

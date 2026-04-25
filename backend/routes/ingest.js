@@ -95,9 +95,20 @@ router.post('/', async (req, res) => {
 
   const data = extracted.data
 
+  // Auto-geocode if no coordinates provided
+  let finalLat = latitude || null
+  let finalLng = longitude || null
+
+  if (!finalLat && !finalLng && data.location_text) {
+    console.log('No coordinates provided — auto-geocoding:', data.location_text)
+    const geo = await geocodeLocation(data.location_text)
+    finalLat = geo.lat
+    finalLng = geo.lng
+  }
+
   // Deduplication check
   console.log('Running dedup check for category:', data.category)
-  const duplicate = await checkDuplicate(data.location_text, data.category, latitude, longitude)
+  const duplicate = await checkDuplicate(data.location_text, data.category, finalLat, finalLng)
   console.log('Duplicate found:', duplicate)
 
   // Urgency scoring
