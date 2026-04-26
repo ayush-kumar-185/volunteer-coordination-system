@@ -2,19 +2,24 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../db')
 const { geocodeLocation } = require('../services/geocoding')
+const bcrypt = require('bcryptjs')
 
 // POST /api/volunteers — register new volunteer
 router.post('/', async (req, res) => {
-  const { name, phone, skills, available_hours, latitude, longitude, location_text } = req.body
+  const { name, email, password, phone, skills, available_hours, latitude, longitude, location_text } = req.body
 
-  if (!name || !phone || !skills) {
+  if (!name || !email || !password || !phone || !skills) {
     return res.status(400).json({
       success: false,
-      error: 'name, phone and skills are required'
+      error: 'name, email, password, phone and skills are required'
     })
   }
 
   try {
+    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email])
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ success: false, error: 'Email already registered' })
+    }
     let finalLat = latitude || null
     let finalLng = longitude || null
 
@@ -29,17 +34,32 @@ router.post('/', async (req, res) => {
       ? `ST_MakePoint(${finalLng}, ${finalLat})::geography`
       : null
 
+    const password_hash = await bcrypt.hash(password, 12);
+
+    await pool.query('BEGIN');
+
+    const userResult = await pool.query(
+      `INSERT INTO users (email, password_hash, full_name, role, phone)
+       VALUES ($1,$2,$3,$4,$5) RETURNING id`,
+      [email, password_hash, name, 'volunteer', phone]
+    );
+
+    const userId = userResult.rows[0].id;
+
     const result = await pool.query(
       `INSERT INTO volunteers
-        (name, phone, skills, available_hours, latitude, longitude, geom)
-       VALUES ($1,$2,$3,$4,$5,$6,${geom ? `ST_MakePoint($6, $5)::geography` : 'NULL'})
-       RETURNING id, name, phone, skills, available_hours, latitude, longitude, is_available`,
-      [name, phone, skills, available_hours || 8, finalLat, finalLng]
+        (user_id, name, phone, skills, available_hours, latitude, longitude, geom)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,${geom ? `ST_MakePoint($7, $6)::geography` : 'NULL'})
+       RETURNING id, user_id, name, phone, skills, available_hours, latitude, longitude, is_available`,
+      [userId, name, phone, skills, available_hours || 8, finalLat, finalLng]
     )
+
+    await pool.query('COMMIT');
 
     res.status(201).json({ success: true, data: result.rows[0] })
 
   } catch (err) {
+    await pool.query('ROLLBACK');
     console.error('Volunteer register error:', err.message)
     res.status(500).json({ success: false, error: 'Failed to register volunteer' })
   }

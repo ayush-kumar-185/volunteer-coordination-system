@@ -3,14 +3,23 @@ const router = express.Router()
 const pool = require('../db')
 const { extractFieldsFromText } = require('../services/llm')
 const { calculateUrgencyScore } = require('../services/scoring')
+const { geocodeLocation } = require('../services/geocoding')
 
 const checkDuplicate = async (location_text, category, lat, lng) => {
   try {
-    console.log('Checking duplicate — location:', location_text, '| category:', category, '| lat:', lat, '| lng:', lng)
+    console.log('Dedup check — location:', location_text, '| category:', category)
 
-    // geom is updated via database trigger
+    // Fix missing geom values first
+    await pool.query(`
+      UPDATE needs
+      SET geom = ST_MakePoint(longitude, latitude)::geography
+      WHERE geom IS NULL
+        AND latitude IS NOT NULL
+        AND longitude IS NOT NULL
+    `)
 
-    // Case 1 — coordinates provided on both records, use spatial check
+    // Case 1 — both records have coordinates
+    // Same category + within 500 meters + last 24 hours = duplicate
     if (lat && lng) {
       const result = await pool.query(
         `SELECT id, report_count FROM needs
@@ -21,58 +30,70 @@ const checkDuplicate = async (location_text, category, lat, lng) => {
            AND ST_DWithin(
              ST_MakePoint(longitude, latitude)::geography,
              ST_MakePoint($2, $3)::geography,
-             1000
+             500
            )
          ORDER BY created_at DESC
          LIMIT 1`,
         [category, lng, lat]
       )
 
-      console.log('Spatial duplicate check result:', result.rows)
-
+      console.log('Spatial dedup result:', result.rows)
       if (result.rows.length > 0) return result.rows[0]
     }
 
-    // Case 2 — no coordinates, use fuzzy text match on location
-    if (location_text) {
-      // Extract meaningful words (ignore short words like "in", "at", "near")
+    // Case 2 — no coordinates, use strict text match
+    // Must match BOTH location AND category
+    // Use multiple key words for stricter matching
+    if (location_text && location_text.trim().length > 0) {
+      // Extract words longer than 4 chars — skip filler words
       const words = location_text
+        .toLowerCase()
         .split(' ')
-        .filter(w => w.length > 3)
-        .slice(0, 3)  // take first 3 meaningful words
+        .filter(w => w.length > 4)
+        .slice(0, 2)  // take max 2 significant words
 
       if (words.length === 0) return null
 
-      // Build a pattern that checks if ANY of the key words match
-      const pattern = `%(${words.join('|')})%`
-      console.log('Text duplicate pattern:', pattern)
+      // Both words must match — AND logic, not OR
+      // This prevents "Dharavi water" matching "Dharavi food"
+      // because category is also checked
+      let query, params
 
-      const result = await pool.query(
-        `SELECT id, report_count FROM needs
-         WHERE category = $1
-           AND status = 'open'
-           AND created_at > NOW() - INTERVAL '24 hours'
-           AND location_text ILIKE ANY(ARRAY[$2,$3,$4])
-         ORDER BY created_at DESC
-         LIMIT 1`,
-        [
-          category,
-          `%${words[0]}%`,
-          words[1] ? `%${words[1]}%` : `%${words[0]}%`,
-          words[2] ? `%${words[2]}%` : `%${words[0]}%`
-        ]
-      )
+      if (words.length >= 2) {
+        // Strict — both significant words must appear in location_text
+        query = `
+          SELECT id, report_count FROM needs
+          WHERE category = $1
+            AND status = 'open'
+            AND created_at > NOW() - INTERVAL '24 hours'
+            AND LOWER(location_text) LIKE $2
+            AND LOWER(location_text) LIKE $3
+          ORDER BY created_at DESC
+          LIMIT 1`
+        params = [category, `%${words[0]}%`, `%${words[1]}%`]
+      } else {
+        // Only one significant word — use it alone
+        query = `
+          SELECT id, report_count FROM needs
+          WHERE category = $1
+            AND status = 'open'
+            AND created_at > NOW() - INTERVAL '24 hours'
+            AND LOWER(location_text) LIKE $2
+          ORDER BY created_at DESC
+          LIMIT 1`
+        params = [category, `%${words[0]}%`]
+      }
 
-      console.log('Text duplicate check result:', result.rows)
-
+      const result = await pool.query(query, params)
+      console.log('Text dedup result:', result.rows)
       if (result.rows.length > 0) return result.rows[0]
     }
 
     return null
 
   } catch (err) {
-    console.error('Duplicate check error:', err.message)
-    return null  // on error, don't block ingestion — just save as new record
+    console.error('Dedup check error:', err.message)
+    return null
   }
 }
 
@@ -144,8 +165,8 @@ router.post('/', async (req, res) => {
        RETURNING *`,
       [
         data.location_text,
-        latitude || null,
-        longitude || null,
+        finalLat || null,
+        finalLng || null,
         data.category,
         finalUrgency,
         data.people_affected,

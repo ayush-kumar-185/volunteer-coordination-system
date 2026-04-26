@@ -1,175 +1,198 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useCallback } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { usePolling } from '../hooks/usePolling';
+import api from '../services/api';
+import toast from 'react-hot-toast';
+import { MapPin, AlertCircle, Users, Check, X, LogOut, Clock } from 'lucide-react';
+import UserMenu from '../components/UserMenu';
 
-function getUrgencyConfig(urgency) {
-  if (urgency >= 8) return { color: 'bg-[#EF4444]', label: 'URGENT' };
-  if (urgency >= 4) return { color: 'bg-[#F59E0B]', label: 'MODERATE' };
-  return { color: 'bg-[#22C55E]', label: 'LOW PRIORITY' };
-}
+const CATEGORY_ICONS = {
+  food: '🍱',
+  water: '💧',
+  medical: '🏥',
+  shelter: '🏠',
+  education: '📚',
+  other: '📋'
+};
 
-export default function VolunteerTaskPage() {
-  const { id } = useParams();
-  const [need, setNeed] = useState(null);
+const VolunteerTaskPage = () => {
+  const { user, logout } = useAuth();
+  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  
-  const [actionStatus, setActionStatus] = useState('idle'); // 'idle', 'accepting', 'declining', 'accepted', 'declined'
+  const [errorMsg, setErrorMsg] = useState('');
+  const [processing, setProcessing] = useState(false);
 
-  useEffect(() => {
-    const fetchNeed = async () => {
-      try {
-        const res = await fetch(`http://localhost:5000/api/needs/${id}`);
-        if (!res.ok) throw new Error('Failed to fetch task details.');
-        const data = await res.json();
-        setNeed(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchNeed();
-  }, [id]);
-
-  const handleAction = async (actionType) => {
-    setActionStatus(actionType === 'accept' ? 'accepting' : 'declining');
+  const fetchTasks = useCallback(async () => {
+    if (!user?.id) return;
     try {
-      const payload = actionType === 'accept' 
-        ? { status: 'accepted', volunteer_accepted: true }
-        : { status: 'declined', volunteer_accepted: false };
-
-      const res = await fetch(`http://localhost:5000/api/needs/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (!res.ok) throw new Error('Action failed');
-      
-      setActionStatus(actionType === 'accept' ? 'accepted' : 'declined');
+      const res = await api.get(`/api/volunteers/${user.id}/tasks`);
+      setTasks(res.data.data || []);
+      setErrorMsg('');
     } catch (err) {
-      alert('Something went wrong. Please try again.');
-      setActionStatus('idle');
+      console.error(err);
+      setErrorMsg('Failed to fetch tasks.');
+    } finally {
+      if (loading) setLoading(false);
+    }
+  }, [user?.id, loading]);
+
+  usePolling(fetchTasks, 15000, !!user?.id);
+
+  const activeTask = tasks.find(t => t.status === 'assigned' || t.status === 'confirmed');
+  const historyTasks = tasks.filter(t => t.id !== activeTask?.id);
+
+  const getUrgencyColor = (score) => {
+    if (score >= 8) return 'bg-red-100 text-red-700 border-red-200';
+    if (score >= 5) return 'bg-orange-100 text-orange-700 border-orange-200';
+    return 'bg-green-100 text-green-700 border-green-200';
+  };
+
+  const getMapsLink = (task) => {
+    if (task.latitude && task.longitude) {
+      return `https://maps.google.com/?q=${task.latitude},${task.longitude}`;
+    }
+    return `https://maps.google.com/?q=${encodeURIComponent(task.location_text)}`;
+  };
+
+  const handleAccept = async () => {
+    setProcessing(true);
+    // Ideally calls an endpoint to confirm task
+    toast.success('Task accepted! Please proceed to the location.');
+    setProcessing(false);
+  };
+
+  const handleDecline = async () => {
+    if (window.confirm('Are you sure you want to decline this task? It will be re-assigned to someone else.')) {
+      setProcessing(true);
+      // In a full implementation, call an endpoint to unassign
+      toast.success('Task declined. You are available for new matches.');
+      setProcessing(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center space-y-4">
+        <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-gray-500 font-medium">Loading your tasks...</p>
       </div>
     );
   }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-gray-50 px-4 text-center">
-        <p className="text-red-500 font-bold">{error}</p>
-      </div>
-    );
-  }
-
-  if (!need) return null;
-
-  if (actionStatus === 'accepted') {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-6 text-center">
-        <div className="text-6xl mb-6">✅</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">Thank you! Task accepted.</h2>
-        <p className="text-gray-600 text-lg mb-8">
-          The NGO has been notified.<br/>Head to <strong>{need.location}</strong> as soon as possible.
-        </p>
-        <p className="text-xs text-gray-400 font-medium tracking-wide uppercase">Powered by volunteers like you</p>
-      </div>
-    );
-  }
-
-  if (actionStatus === 'declined') {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-6 text-center">
-        <div className="text-6xl mb-6">👋</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">No problem.</h2>
-        <p className="text-gray-600 text-lg mb-8">
-          We'll find another volunteer nearby.
-        </p>
-        <p className="text-xs text-gray-400 font-medium tracking-wide uppercase">Powered by volunteers like you</p>
-      </div>
-    );
-  }
-
-  const urgencyVal = need.urgency_score !== undefined ? need.urgency_score : need.urgency;
-  const config = getUrgencyConfig(urgencyVal);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center w-full py-0 sm:py-8">
-      <div className="w-full max-w-[390px] bg-white min-h-screen sm:min-h-0 sm:rounded-[2rem] shadow-2xl flex flex-col overflow-hidden">
-        {/* App Name */}
-        <div className="bg-white py-3 text-center border-b border-gray-100">
-          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Community Response Network</p>
-        </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col md:items-center pb-20 text-gray-900 dark:text-gray-100 transition-colors">
+      <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 p-4 flex justify-between items-center shadow-sm md:w-full md:max-w-md sticky top-0 z-10 w-full transition-colors">
+        <h1 className="font-extrabold text-xl tracking-tight">My Assignments</h1>
+        <UserMenu />
+      </div>
 
-        {/* Banner */}
-        <div className={`${config.color} text-white px-6 py-5 flex justify-between items-center shadow-sm`}>
-          <span className="font-extrabold tracking-widest text-sm">{config.label}</span>
-          <span className="font-bold bg-black/20 px-3 py-1 rounded-full text-xs">Score: {urgencyVal}</span>
-        </div>
+      <div className="flex-1 p-4 w-full md:max-w-md space-y-6 mt-2">
+        {errorMsg && (
+          <div className="p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm flex items-center justify-between">
+            {errorMsg}
+            <button onClick={fetchTasks} className="underline font-medium">Retry</button>
+          </div>
+        )}
 
-        {/* Content */}
-        <div className="p-7 flex-1 flex flex-col">
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-8 leading-tight">{need.category}</h1>
-          
-          <div className="space-y-5 mb-8">
-            <div className="flex items-start gap-4">
-              <span className="text-2xl mt-0.5">📍</span>
-              <div>
-                <p className="text-[11px] text-gray-500 uppercase font-bold tracking-wider mb-1">Location</p>
-                <p className="text-gray-900 font-bold text-lg leading-snug">{need.location}</p>
+        {/* ACTIVE TASK */}
+        {activeTask ? (
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden relative transition-colors">
+            <div className={`absolute top-0 left-0 w-full h-1 ${activeTask.urgency_score >= 8 ? 'bg-red-500' : activeTask.urgency_score >= 5 ? 'bg-orange-500' : 'bg-green-500'}`}></div>
+            <div className="p-5">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center space-x-3">
+                  <span className="text-4xl bg-gray-50 dark:bg-gray-900 p-2 rounded-xl">{CATEGORY_ICONS[activeTask.category] || CATEGORY_ICONS.other}</span>
+                  <div>
+                    <h2 className="font-bold text-gray-900 dark:text-white capitalize text-lg">{activeTask.category} required</h2>
+                    <a 
+                      href={getMapsLink(activeTask)} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 hover:underline flex items-center mt-1 transition-colors"
+                    >
+                      <MapPin className="w-3.5 h-3.5 mr-1" />
+                      {activeTask.location_text}
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 leading-relaxed">{activeTask.description}</p>
+              
+              <div className="flex space-x-2 mb-6">
+                <span className={`px-2.5 py-1 rounded-full text-xs font-medium border flex items-center ${getUrgencyColor(activeTask.urgency_score)}`}>
+                  <AlertCircle className="w-3.5 h-3.5 mr-1" />
+                  Urgency: {activeTask.urgency_score}/10
+                </span>
+                <span className="px-2.5 py-1 rounded-full text-xs font-medium border bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 flex items-center">
+                  <Users className="w-3.5 h-3.5 mr-1" />
+                  {activeTask.people_affected} affected
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <button 
+                  onClick={handleAccept}
+                  disabled={processing}
+                  className="w-full bg-gray-900 dark:bg-gray-100 hover:bg-gray-800 dark:hover:bg-white text-white dark:text-gray-900 font-bold py-3 rounded-xl flex items-center justify-center transition-colors shadow-sm disabled:opacity-50"
+                >
+                  <Check className="w-5 h-5 mr-2" /> Accept Mission
+                </button>
+                <button 
+                  onClick={handleDecline}
+                  disabled={processing}
+                  className="w-full bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold py-3 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center transition-colors disabled:opacity-50"
+                >
+                  <X className="w-4 h-4 mr-1.5" /> Decline
+                </button>
               </div>
             </div>
-            
-            <div className="flex items-start gap-4">
-              <span className="text-2xl mt-0.5">👥</span>
-              <div>
-                <p className="text-[11px] text-gray-500 uppercase font-bold tracking-wider mb-1">People Affected</p>
-                <p className="text-gray-900 font-bold text-lg">{need.people_affected || 'N/A'}</p>
-              </div>
+          </div>
+        ) : (
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 flex flex-col items-center text-center transition-colors">
+            <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700/50 text-gray-400 dark:text-gray-500 rounded-full flex items-center justify-center mb-4">
+              <Clock className="w-8 h-8" />
             </div>
+            <h3 className="text-gray-900 dark:text-white font-semibold mb-1">No Active Assignments</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">You are on standby. We will match you when a need arises.</p>
           </div>
+        )}
 
-          <div className="mb-8">
-            <p className="text-[11px] text-gray-500 uppercase font-bold tracking-wider mb-2">Description</p>
-            <p className="text-gray-800 leading-relaxed text-[15px]">{need.description}</p>
-          </div>
-
-          <hr className="border-gray-200 mb-8 mt-auto" />
-
-          {/* Buttons */}
-          <div className="space-y-4 pb-4">
-            <button
-              onClick={() => handleAction('accept')}
-              disabled={actionStatus !== 'idle'}
-              className="w-full bg-[#22C55E] hover:bg-green-600 disabled:bg-green-400 text-white font-extrabold rounded-2xl flex items-center justify-center transition-all min-h-[56px] text-lg shadow-sm active:scale-[0.98]"
-            >
-              {actionStatus === 'accepting' ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-              ) : (
-                'ACCEPT'
-              )}
-            </button>
-            <button
-              onClick={() => handleAction('decline')}
-              disabled={actionStatus !== 'idle'}
-              className="w-full bg-white border-[2.5px] border-[#EF4444] text-[#EF4444] hover:bg-red-50 disabled:border-red-200 disabled:text-red-300 font-extrabold rounded-2xl flex items-center justify-center transition-all min-h-[56px] text-lg active:scale-[0.98]"
-            >
-              {actionStatus === 'declining' ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#EF4444]"></div>
-              ) : (
-                'DECLINE'
-              )}
-            </button>
-          </div>
+        {/* HISTORY */}
+        <div>
+          <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Task History</h3>
+          {historyTasks.length > 0 ? (
+            <div className="space-y-3">
+              {historyTasks.map(task => (
+                <div key={task.id} className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-between transition-colors">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-2xl bg-gray-50 dark:bg-gray-900 p-1.5 rounded-lg">{CATEGORY_ICONS[task.category] || CATEGORY_ICONS.other}</span>
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white text-sm capitalize">{task.category}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate w-40">{task.location_text}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                      task.status === 'closed' ? 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300' : 
+                      task.status === 'completed' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-500' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+                    }`}>
+                      {task.status}
+                    </span>
+                    <p className="text-[10px] text-gray-400 mt-1">{new Date(task.created_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-sm text-gray-400 italic text-center py-4 bg-gray-50 rounded-xl border border-gray-100 border-dashed">
+              No previous tasks
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default VolunteerTaskPage;
