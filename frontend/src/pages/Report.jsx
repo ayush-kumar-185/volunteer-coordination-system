@@ -5,6 +5,8 @@ import { Loader2, Camera, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import UserMenu from '../components/UserMenu';
 
+const SKILLS = ['food', 'cooking', 'water', 'plumbing', 'medical', 'first_aid', 'shelter', 'construction', 'education', 'teaching', 'driving', 'logistics'];
+
 const Report = () => {
   const { logout } = useAuth();
   
@@ -135,12 +137,11 @@ const Report = () => {
                   onChange={e => setCategory(e.target.value)}
                   className="w-full px-4 py-2 bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-400 outline-none transition-shadow appearance-none"
                 >
-                  <option value="food" className="dark:bg-gray-800">Food</option>
-                  <option value="water" className="dark:bg-gray-800">Water</option>
-                  <option value="medical" className="dark:bg-gray-800">Medical</option>
-                  <option value="shelter" className="dark:bg-gray-800">Shelter</option>
-                  <option value="education" className="dark:bg-gray-800">Education</option>
-                  <option value="other" className="dark:bg-gray-800">Other</option>
+                  {SKILLS.map((skill) => (
+                    <option key={skill} value={skill} className="dark:bg-gray-800">
+                      {skill.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>

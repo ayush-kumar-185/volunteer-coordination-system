@@ -88,7 +88,7 @@ router.post('/complete', async (req, res) => {
     const result = await pool.query(
       `UPDATE needs
        SET status = 'closed', resolved_at = NOW()
-       WHERE id = $1 AND status = 'assigned'
+       WHERE id = $1 AND status IN ('assigned', 'confirmed')
        RETURNING *, assigned_volunteer_id`,
       [id]
     )
@@ -116,5 +116,37 @@ router.post('/complete', async (req, res) => {
     res.status(500).json({ success: false, error: 'Failed to mark complete' })
   }
 })
+
+// POST /api/needs/:id/confirm — volunteer accepts task
+router.post('/confirm', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `UPDATE needs SET status = 'confirmed' WHERE id = $1 AND status = 'assigned' RETURNING *`,
+      [id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ success: false, error: 'Need not found or not assigned' });
+    res.json({ success: true, data: result.rows[0] });
+  } catch (err) {
+    console.error('Confirm error:', err.message);
+    res.status(500).json({ success: false, error: 'Failed to confirm' });
+  }
+});
+
+// POST /api/needs/:id/reject — volunteer declines task
+router.post('/reject', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const needRes = await pool.query(`SELECT assigned_volunteer_id FROM needs WHERE id = $1 AND status = 'assigned'`, [id]);
+    if (needRes.rows.length === 0) return res.status(404).json({ success: false, error: 'Need not found or not assigned' });
+    const volId = needRes.rows[0].assigned_volunteer_id;
+    await pool.query(`UPDATE needs SET status = 'open', assigned_volunteer_id = NULL, assigned_at = NULL WHERE id = $1`, [id]);
+    if (volId) await pool.query(`UPDATE volunteers SET is_available = TRUE WHERE id = $1`, [volId]);
+    res.json({ success: true, message: 'Rejected successfully' });
+  } catch (err) {
+    console.error('Reject error:', err.message);
+    res.status(500).json({ success: false, error: 'Failed to reject' });
+  }
+});
 
 module.exports = router

@@ -80,7 +80,7 @@ const VolunteerRegister = () => {
               <input 
                 type="text" required value={formData.phone}
                 onChange={e => setFormData({...formData, phone: e.target.value})}
-                placeholder="+91..."
+                placeholder="Enter your phone Number"
                 className="w-full px-4 py-2 bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-400 outline-none transition-shadow dark:text-white dark:placeholder-gray-500"
               />
             </div>

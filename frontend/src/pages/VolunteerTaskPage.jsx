@@ -1,17 +1,23 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { usePolling } from '../hooks/usePolling';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { MapPin, AlertCircle, Users, Check, X, LogOut, Clock } from 'lucide-react';
+import { MapPin, AlertCircle, Users, Check, X, LogOut, Clock, RefreshCw } from 'lucide-react';
 import UserMenu from '../components/UserMenu';
 
 const CATEGORY_ICONS = {
   food: '🍱',
+  cooking: '🍳',
   water: '💧',
+  plumbing: '🔧',
   medical: '🏥',
+  first_aid: '🩹',
   shelter: '🏠',
+  construction: '🏗️',
   education: '📚',
+  teaching: '🧑‍🏫',
+  driving: '🚗',
+  logistics: '📦',
   other: '📋'
 };
 
@@ -36,9 +42,11 @@ const VolunteerTaskPage = () => {
     }
   }, [user?.id, loading]);
 
-  usePolling(fetchTasks, 15000, !!user?.id);
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
-  const activeTask = tasks.find(t => t.status === 'assigned' || t.status === 'confirmed');
+  const activeTask = tasks.find(t => t.status === 'pending' || t.status === 'assigned' || t.status === 'confirmed');
   const historyTasks = tasks.filter(t => t.id !== activeTask?.id);
 
   const getUrgencyColor = (score) => {
@@ -54,18 +62,15 @@ const VolunteerTaskPage = () => {
     return `https://maps.google.com/?q=${encodeURIComponent(task.location_text)}`;
   };
 
-  const handleAccept = async () => {
+  const handleDone = async () => {
     setProcessing(true);
-    // Ideally calls an endpoint to confirm task
-    toast.success('Task accepted! Please proceed to the location.');
-    setProcessing(false);
-  };
-
-  const handleDecline = async () => {
-    if (window.confirm('Are you sure you want to decline this task? It will be re-assigned to someone else.')) {
-      setProcessing(true);
-      // In a full implementation, call an endpoint to unassign
-      toast.success('Task declined. You are available for new matches.');
+    try {
+      await api.post(`/api/needs/${activeTask.id}/complete`);
+      toast.success('Task completed! Thank you for your service.');
+      fetchTasks();
+    } catch (err) {
+      toast.error('Failed to mark task as complete.');
+    } finally {
       setProcessing(false);
     }
   };
@@ -83,7 +88,16 @@ const VolunteerTaskPage = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col md:items-center pb-20 text-gray-900 dark:text-gray-100 transition-colors">
       <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 p-4 flex justify-between items-center shadow-sm md:w-full md:max-w-md sticky top-0 z-10 w-full transition-colors">
         <h1 className="font-extrabold text-xl tracking-tight">My Assignments</h1>
-        <UserMenu />
+        <div className="flex items-center space-x-3">
+          <button 
+            onClick={fetchTasks}
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors flex shrink-0"
+            title="Refresh Tasks"
+          >
+            <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+          </button>
+          <UserMenu />
+        </div>
       </div>
 
       <div className="flex-1 p-4 w-full md:max-w-md space-y-6 mt-2">
@@ -132,18 +146,11 @@ const VolunteerTaskPage = () => {
 
               <div className="space-y-3">
                 <button 
-                  onClick={handleAccept}
+                  onClick={handleDone}
                   disabled={processing}
-                  className="w-full bg-gray-900 dark:bg-gray-100 hover:bg-gray-800 dark:hover:bg-white text-white dark:text-gray-900 font-bold py-3 rounded-xl flex items-center justify-center transition-colors shadow-sm disabled:opacity-50"
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl flex items-center justify-center transition-colors shadow-sm disabled:opacity-50"
                 >
-                  <Check className="w-5 h-5 mr-2" /> Accept Mission
-                </button>
-                <button 
-                  onClick={handleDecline}
-                  disabled={processing}
-                  className="w-full bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold py-3 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center transition-colors disabled:opacity-50"
-                >
-                  <X className="w-4 h-4 mr-1.5" /> Decline
+                  <Check className="w-5 h-5 mr-2" /> DONE - Mark Complete
                 </button>
               </div>
             </div>

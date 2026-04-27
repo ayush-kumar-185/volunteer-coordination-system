@@ -84,11 +84,12 @@ router.get('/', async (req, res) => {
 router.get('/:id/tasks', async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT id, category, urgency_score, location_text, description,
-              status, assigned_at, resolved_at, people_affected
-       FROM needs
-       WHERE assigned_volunteer_id = $1
-       ORDER BY assigned_at DESC`,
+      `SELECT n.id, n.category, n.urgency_score, n.location_text, n.description,
+              n.status, n.assigned_at, n.resolved_at, n.people_affected
+       FROM needs n
+       JOIN volunteers v ON n.assigned_volunteer_id = v.id
+       WHERE v.user_id = $1
+       ORDER BY n.assigned_at DESC`,
       [req.params.id]
     )
     res.json({ success: true, count: result.rows.length, data: result.rows })

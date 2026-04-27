@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { usePolling } from '../hooks/usePolling';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { LogOut, Filter, Activity, Users, CheckCircle, Clock } from 'lucide-react';
+import { LogOut, Filter, Activity, Users, CheckCircle, Clock, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -11,12 +10,21 @@ import NeedsMap from './NeedsMap';
 import NeedDetailPanel from './NeedDetailPanel';
 import GapsTab from './GapsTab';
 
+const SKILLS = ['food', 'cooking', 'water', 'plumbing', 'medical', 'first_aid', 'shelter', 'construction', 'education', 'teaching', 'driving', 'logistics'];
+
 const CATEGORY_ICONS = {
   food: '🍱',
+  cooking: '🍳',
   water: '💧',
+  plumbing: '🔧',
   medical: '🏥',
+  first_aid: '🩹',
   shelter: '🏠',
+  construction: '🏗️',
   education: '📚',
+  teaching: '🧑‍🏫',
+  driving: '🚗',
+  logistics: '📦',
   other: '📋'
 };
 
@@ -59,9 +67,11 @@ const Dashboard = () => {
     }
   }, []);
 
-  // Set up required polling
-  usePolling(fetchNeeds, 10000);
-  usePolling(fetchStats, 30000);
+  // Initial load
+  useEffect(() => {
+    fetchNeeds();
+    fetchStats();
+  }, [fetchNeeds, fetchStats]);
 
   // Derived filtered needs
   const filteredNeeds = useMemo(() => {
@@ -80,7 +90,16 @@ const Dashboard = () => {
       <header className="bg-white dark:bg-gray-800 shadow-sm z-50 relative shrink-0 border-b border-gray-200 dark:border-gray-700 transition-colors">
         <div className="flex justify-between items-center py-3 px-6">
           <h1 className="font-extrabold text-xl tracking-tight text-gray-900 dark:text-white">Coordination Dashboard</h1>
-          <UserMenu />
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => { fetchNeeds(); fetchStats(); }}
+              className="p-1.5 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white bg-gray-100/50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition"
+              title="Refresh Data"
+            >
+              <RefreshCw className={`w-5 h-5 ${loadingNeeds || loadingStats ? 'animate-spin' : ''}`} />
+            </button>
+            <UserMenu />
+          </div>
         </div>
         
         <div className="flex overflow-x-auto hide-scrollbar gap-3 px-6 pb-4">
@@ -134,13 +153,12 @@ const Dashboard = () => {
                   value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}
                   className="flex-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-xs rounded shadow-sm focus:ring-gray-900 dark:focus:ring-gray-500 px-2 py-1.5 outline-none transition-colors"
                 >
-                  <option value="">All Categories</option>
-                  <option value="food">Food</option>
-                  <option value="water">Water</option>
-                  <option value="medical">Medical</option>
-                  <option value="shelter">Shelter</option>
-                  <option value="education">Education</option>
-                  <option value="other">Other</option>
+                  <option value="">All Needs</option>
+                  {SKILLS.map((skill) => (
+                    <option key={skill} value={skill} className="dark:bg-gray-800">
+                      {skill.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                    </option>
+                  ))}
                 </select>
                 <select 
                   value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
@@ -148,8 +166,8 @@ const Dashboard = () => {
                 >
                   <option value="">All Status</option>
                   <option value="open">Open</option>
+                  <option value="pending">Pending</option>
                   <option value="assigned">Assigned</option>
-                  <option value="confirmed">Confirmed</option>
                   <option value="closed">Closed</option>
                 </select>
               </div>
@@ -178,8 +196,8 @@ const Dashboard = () => {
                             </div>
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                                 need.status === 'open' ? 'bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-100 dark:border-orange-800/50' :
-                                need.status === 'assigned' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800/50' :
-                                need.status === 'confirmed' ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600' :
+                                need.status === 'pending' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800/50' :
+                                need.status === 'assigned' ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600' :
                                 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-100 dark:border-green-800/50'
                               }`}>
                               {need.status}
@@ -204,7 +222,7 @@ const Dashboard = () => {
               </div>
             </div>
           ) : (
-            <GapsTab />
+            <GapsTab onSelectNeed={setSelectedNeedId} />
           )}
 
           {/* Need Detail Panel Overlay */}

@@ -12,10 +12,12 @@ router.post('/', express.urlencoded({ extended: false }), async (req, res) => {
 
   const twiml = new twilio.twiml.MessagingResponse()
 
+  const last10 = fromNumber.replace(/\D/g, '').slice(-10);
+
   // Find the volunteer by phone number
   const volResult = await pool.query(
-    'SELECT * FROM volunteers WHERE phone = $1',
-    [fromNumber.replace('whatsapp:', '')]
+    `SELECT * FROM volunteers WHERE phone LIKE $1`,
+    [`%${last10}`]
   )
 
   if (volResult.rows.length === 0) {

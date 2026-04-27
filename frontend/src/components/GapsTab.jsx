@@ -1,18 +1,24 @@
-import React, { useState, useCallback } from 'react';
-import { usePolling } from '../hooks/usePolling';
+import React, { useState, useCallback, useEffect } from 'react';
 import api from '../services/api';
-import { AlertTriangle, Clock } from 'lucide-react';
+import { AlertTriangle, Clock, RefreshCw, CheckCircle } from 'lucide-react';
 
 const CATEGORY_ICONS = {
   food: '🍱',
+  cooking: '🍳',
   water: '💧',
+  plumbing: '🔧',
   medical: '🏥',
+  first_aid: '🩹',
   shelter: '🏠',
+  construction: '🏗️',
   education: '📚',
+  teaching: '🧑‍🏫',
+  driving: '🚗',
+  logistics: '📦',
   other: '📋'
 };
 
-const GapsTab = () => {
+const GapsTab = ({ onSelectNeed }) => {
   const [gaps, setGaps] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +33,9 @@ const GapsTab = () => {
     }
   }, [loading]);
 
-  usePolling(fetchGaps, 60000);
+  useEffect(() => {
+    fetchGaps();
+  }, [fetchGaps]);
 
   if (loading) {
     return (
@@ -52,13 +60,18 @@ const GapsTab = () => {
 
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-      <div className="bg-red-50 text-red-700 p-3.5 rounded-lg text-sm flex items-start border border-red-100 shadow-sm font-medium">
-        <AlertTriangle className="w-5 h-5 mr-2.5 shrink-0 mt-0.5 text-red-600" />
-        <p>Critical: These needs have been open for over 6 hours without any assigned volunteers.</p>
+      <div className="flex justify-between items-center bg-red-50 text-red-700 p-3.5 rounded-lg text-sm border border-red-100 shadow-sm font-medium">
+        <div className="flex items-start">
+          <AlertTriangle className="w-5 h-5 mr-2.5 shrink-0 mt-0.5 text-red-600" />
+          <p>Critical: These needs have been open for over 6 hours without any assigned volunteers.</p>
+        </div>
+        <button onClick={fetchGaps} className="p-1.5 hover:bg-red-100 rounded-md transition-colors" title="Refresh Gaps">
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+        </button>
       </div>
       
       {gaps.map(gap => (
-        <div key={gap.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+        <div key={gap.id} onClick={() => onSelectNeed && onSelectNeed(gap.id)} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
           <div className="border-l-4 border-l-red-500 p-4">
             <div className="flex justify-between items-start mb-3">
               <div className="flex items-center">
@@ -86,8 +99,5 @@ const GapsTab = () => {
     </div>
   );
 };
-
-// Quick stub for valid render if missing icon import above (was missing check circle)
-import { CheckCircle } from 'lucide-react';
 
 export default GapsTab;

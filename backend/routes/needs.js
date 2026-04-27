@@ -67,7 +67,7 @@ router.get('/stats', async (req, res) => {
     const result = await pool.query(`
       SELECT
         COUNT(*) FILTER (WHERE status = 'open') AS open_needs,
-        COUNT(*) FILTER (WHERE status = 'assigned') AS assigned_needs,
+        COUNT(*) FILTER (WHERE status = 'pending') AS pending_needs,
         COUNT(*) FILTER (WHERE status = 'closed') AS resolved_needs,
         COUNT(*) AS total_needs,
         COALESCE(SUM(people_affected) FILTER (WHERE status = 'closed'), 0) AS people_helped,

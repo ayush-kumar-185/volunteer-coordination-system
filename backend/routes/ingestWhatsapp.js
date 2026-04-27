@@ -50,7 +50,7 @@ router.post('/', express.urlencoded({ extended: false }), async (req, res) => {
 
       if (bodyText === 'YES') {
         await pool.query(
-          `UPDATE needs SET status = 'confirmed' WHERE id = $1`,
+          `UPDATE needs SET status = 'assigned' WHERE id = $1`,
           [need.id]
         )
         twiml.message(

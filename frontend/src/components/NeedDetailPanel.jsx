@@ -74,8 +74,8 @@ const NeedDetailPanel = ({ need, onClose, onRefreshRequired }) => {
             <span className="capitalize mr-2">{need.category} Need</span>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
               need.status === 'open' ? 'bg-orange-50 text-orange-700 border border-orange-100' :
-              need.status === 'assigned' ? 'bg-blue-50 text-blue-700 border border-blue-100' :
-              need.status === 'confirmed' ? 'bg-gray-100 text-gray-700 border border-gray-200' :
+              need.status === 'pending' ? 'bg-blue-50 text-blue-700 border border-blue-100' :
+              need.status === 'assigned' ? 'bg-gray-100 text-gray-700 border border-gray-200' :
               'bg-green-50 text-green-700 border border-green-100'
             }`}>
               {need.status}
@@ -122,17 +122,12 @@ const NeedDetailPanel = ({ need, onClose, onRefreshRequired }) => {
         <hr className="border-gray-100" />
 
         {/* Action Area based on status */}
-        {(need.status === 'assigned' || need.status === 'confirmed') ? (
+        {(need.status === 'pending' || need.status === 'assigned' || need.status === 'confirmed') ? (
           <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center shadow-sm">
             <h3 className="font-bold text-gray-900 mb-2">Volunteer Deployed</h3>
-            <p className="text-xs text-gray-600 mb-4 font-medium">A volunteer handles this task. Once they confirm it's resolved, mark it complete below.</p>
-            <button 
-              onClick={handleComplete}
-              disabled={actionLoading}
-              className="w-full bg-gray-900 hover:bg-gray-800 text-white shadow-sm font-bold py-2 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50"
-            >
-              <CheckCircle className="w-5 h-5 mr-2" /> Mark Complete
-            </button>
+            <p className="text-xs text-gray-600 font-medium">
+              A volunteer is handling this task. {need.status === 'confirmed' ? "They have accepted it." : "Waiting for their confirmation."}
+            </p>
           </div>
         ) : need.status === 'open' ? (
           <div>
