@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { Loader2, Camera, LogOut } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import UserMenu from '../components/UserMenu';
 
@@ -17,10 +17,7 @@ const Report = () => {
   const [description, setDescription] = useState('');
   
   const [loadingText, setLoadingText] = useState(false);
-  const [loadingPhoto, setLoadingPhoto] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  
-  const fileInputRef = useRef(null);
 
   const resetForm = () => {
     setLocation('');
@@ -51,31 +48,6 @@ const Report = () => {
     }
   };
 
-  const handlePhotoChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    setLoadingPhoto(true);
-    setErrorMsg('');
-    
-    const formData = new FormData();
-    formData.append('image', file);
-    
-    try {
-      await api.post('/api/ingest/photo', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      toast.success('Photo report submitted successfully');
-      if (fileInputRef.current) fileInputRef.current.value = '';
-    } catch (err) {
-      const msg = err.response?.data?.message || 'Failed to upload photo.';
-      setErrorMsg(msg);
-      toast.error(msg);
-    } finally {
-      setLoadingPhoto(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col md:items-center text-gray-900 dark:text-gray-100 transition-colors">
       <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 p-4 flex justify-between items-center shadow-sm md:w-full md:max-w-md w-full sticky top-0 z-10 transition-colors">
@@ -85,36 +57,6 @@ const Report = () => {
       
       <div className="flex-1 p-4 md:w-full md:max-w-md">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 space-y-6 transition-colors">
-          
-          <div className="flex justify-between items-center bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-700 transition-colors">
-            <div>
-              <h3 className="font-bold text-gray-900 dark:text-white">Quick Photo Report</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 font-medium">Found something? Snap a picture.</p>
-            </div>
-            <button 
-              onClick={() => fileInputRef.current?.click()}
-              disabled={loadingPhoto}
-              className="bg-gray-900 dark:bg-gray-700 text-white p-3 rounded-xl hover:bg-gray-800 dark:hover:bg-gray-600 shadow-sm disabled:opacity-50 transition"
-            >
-              {loadingPhoto ? <Loader2 className="w-6 h-6 animate-spin" /> : <Camera className="w-6 h-6" />}
-            </button>
-            <input 
-              type="file" 
-              accept="image/*" 
-              className="hidden" 
-              ref={fileInputRef} 
-              onChange={handlePhotoChange}
-            />
-          </div>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-              <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-white dark:bg-gray-800 px-3 text-sm text-gray-500 dark:text-gray-400 font-medium">Or enter details</span>
-            </div>
-          </div>
 
           {errorMsg && <div className="p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm">{errorMsg}</div>}
 

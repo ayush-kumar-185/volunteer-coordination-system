@@ -6,7 +6,7 @@ const cors = require('cors')
 
 
 const ingestRoutes = require('./routes/ingest')
-const ingestPhotoRoutes = require('./routes/ingestPhoto')
+// const ingestPhotoRoutes = require('./routes/ingestPhoto')
 const needsRoutes = require('./routes/needs')
 const authRoutes = require('./routes/auth')
 const matchesRouter = require('./routes/matches')
@@ -22,7 +22,7 @@ app.use(express.json())
 
 app.use('/api/auth', authRoutes)
 app.use('/api/ingest', ingestRoutes)
-app.use('/api/ingest/photo', ingestPhotoRoutes)
+// app.use('/api/ingest/photo', ingestPhotoRoutes)
 app.use('/api/ingest/whatsapp', ingestWhatsappRoutes)
 app.use('/api/needs/:id/matches', matchesRouter)
 app.use('/api/needs/:id', dispatchRouter)
@@ -41,6 +41,6 @@ app.use((err, req, res, next) => {
 })
 
 const PORT = process.env.PORT || 8080
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
