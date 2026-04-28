@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { MapPin, AlertCircle, Users, Check, X, LogOut, Clock, RefreshCw } from 'lucide-react';
+import { MapPin, AlertCircle, Users, Check, X, LogOut, Clock } from 'lucide-react';
 import UserMenu from '../components/UserMenu';
 
 const CATEGORY_ICONS = {
@@ -30,6 +30,7 @@ const VolunteerTaskPage = () => {
 
   const fetchTasks = useCallback(async () => {
     if (!user?.id) return;
+    setLoading(true);
     try {
       const res = await api.get(`/api/volunteers/${user.id}/tasks`);
       setTasks(res.data.data || []);
@@ -38,9 +39,9 @@ const VolunteerTaskPage = () => {
       console.error(err);
       setErrorMsg('Failed to fetch tasks.');
     } finally {
-      if (loading) setLoading(false);
+      setLoading(false);
     }
-  }, [user?.id, loading]);
+  }, [user?.id]);
 
   useEffect(() => {
     fetchTasks();
@@ -89,13 +90,7 @@ const VolunteerTaskPage = () => {
       <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 p-4 flex justify-between items-center shadow-sm md:w-full md:max-w-md sticky top-0 z-10 w-full transition-colors">
         <h1 className="font-extrabold text-xl tracking-tight">My Assignments</h1>
         <div className="flex items-center space-x-3">
-          <button 
-            onClick={fetchTasks}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors flex shrink-0"
-            title="Refresh Tasks"
-          >
-            <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
-          </button>
+
           <UserMenu />
         </div>
       </div>

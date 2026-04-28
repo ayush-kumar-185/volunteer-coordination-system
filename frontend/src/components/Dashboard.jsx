@@ -46,6 +46,7 @@ const Dashboard = () => {
   const [loadingStats, setLoadingStats] = useState(true);
 
   const fetchNeeds = useCallback(async () => {
+    setLoadingNeeds(true);
     try {
       const res = await api.get('/api/needs');
       setNeeds(res.data.data || []);
@@ -57,6 +58,7 @@ const Dashboard = () => {
   }, []);
 
   const fetchStats = useCallback(async () => {
+    setLoadingStats(true);
     try {
       const res = await api.get('/api/needs/stats');
       setStats(res.data.data || {});
@@ -89,7 +91,7 @@ const Dashboard = () => {
       {/* Header & Stats Strip */}
       <header className="bg-white dark:bg-gray-800 shadow-sm z-50 relative shrink-0 border-b border-gray-200 dark:border-gray-700 transition-colors">
         <div className="flex justify-between items-center py-3 px-6">
-          <h1 className="font-extrabold text-xl tracking-tight text-gray-900 dark:text-white">Coordination Dashboard</h1>
+          <h1 className="font-extrabold text-xl tracking-tight text-gray-900 dark:text-white">Admin Dashboard</h1>
           <div className="flex items-center space-x-4">
             <button 
               onClick={() => { fetchNeeds(); fetchStats(); }}
