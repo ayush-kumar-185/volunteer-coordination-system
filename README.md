@@ -1,10 +1,30 @@
-📌 The Problem
+# VolunteerConnect 🤝
+
+> An AI-powered volunteer coordination system that connects community needs to the right volunteers — in real time.
+
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=flat-square)](https://react.dev/)
+[![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E?style=flat-square)](https://supabase.com/)
+[![Gemini](https://img.shields.io/badge/AI-Gemini%20API-4285F4?style=flat-square)](https://ai.google.dev/)
+[![Twilio](https://img.shields.io/badge/Notifications-Twilio-F22F46?style=flat-square)](https://twilio.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
+
+---
+
+## 📌 The Problem
+
 India has over 3 million registered NGOs, yet resource misallocation remains one of the biggest reasons social programs underdeliver. Community need data sits scattered across WhatsApp chats, paper surveys, and spreadsheets — while volunteers go unmatched to urgent needs nearby.
-VolunteerConnect solves this end-to-end:
+
+**VolunteerConnect solves this end-to-end:**  
 Messy field data → AI processing → smart volunteer dispatch → real-time impact tracking.
 
-🏗️ Architecture Overview
+---
+
+## 🏗️ Architecture Overview
+
 The system is built on three independent layers:
+
+```
 ┌─────────────────────────────────────────────────────────┐
 │                   LAYER 1 — INGESTION                   │
 │  Web Form │ WhatsApp/SMS (Twilio) │ Photo Upload (OCR)  │
@@ -24,36 +44,53 @@ The system is built on three independent layers:
 │   NGO Dashboard (Leaflet heatmap) │ Twilio SMS/WhatsApp │
 │          Impact Tracker │ Volunteer Task View           │
 └─────────────────────────────────────────────────────────┘
+```
 
-✨ Features
-Data Ingestion
+---
 
-Multi-channel intake — web form, WhatsApp bot, SMS, and paper survey photo upload
-AI field extraction — Gemini API parses free-text in any language into structured JSON
-OCR for paper surveys — Google Cloud Vision reads handwritten and printed surveys
-Auto geocoding — Google Maps API converts location strings to lat/lng coordinates
-Language detection — handles Hindi, English, and mixed-language inputs
+## ✨ Features
 
-Intelligence
+### Data Ingestion
+- **Multi-channel intake** — web form, WhatsApp bot, SMS, and paper survey photo upload
+- **AI field extraction** — Gemini API parses free-text in any language into structured JSON
+- **OCR for paper surveys** — Google Cloud Vision reads handwritten and printed surveys
+- **Auto geocoding** — Google Maps API converts location strings to lat/lng coordinates
+- **Language detection** — handles Hindi, English, and mixed-language inputs
 
-Urgency scoring — weighted algorithm: people_affected × severity × time_elapsed
-Geospatial volunteer matching — PostGIS finds top 3 volunteers by proximity + skill + availability
-Gap detection — flags needs open for 8+ hours with no volunteer assigned
-Deduplication — merges duplicate reports within 500m of the same category
+### Intelligence
+- **Urgency scoring** — weighted algorithm: `people_affected × severity × time_elapsed`
+- **Geospatial volunteer matching** — PostGIS finds top 3 volunteers by proximity + skill + availability
+- **Gap detection** — flags needs open for 8+ hours with no volunteer assigned
+- **Deduplication** — merges duplicate reports within 500m of the same category
 
-Action & Dispatch
+### Action & Dispatch
+- **Live heatmap dashboard** — Leaflet.js map with red/amber/green urgency pins
+- **Real-time updates** — Supabase websocket subscriptions, no page refresh needed
+- **Automated SMS/WhatsApp dispatch** — Twilio sends task details to matched volunteer instantly
+- **One-reply accept/decline** — volunteer replies YES/NO, dashboard updates immediately
+- **Impact tracker** — live stats: needs submitted, resolved, volunteers deployed, people helped
 
-Live heatmap dashboard — Leaflet.js map with red/amber/green urgency pins
-Real-time updates — Supabase websocket subscriptions, no page refresh needed
-Automated SMS/WhatsApp dispatch — Twilio sends task details to matched volunteer instantly
-One-reply accept/decline — volunteer replies YES/NO, dashboard updates immediately
-Impact tracker — live stats: needs submitted, resolved, volunteers deployed, people helped
+---
 
+## 🛠️ Tech Stack
 
-🛠️ Tech Stack
-LayerTechnologyFrontendReact, Tailwind CSS, Leaflet.jsBackendPython, FastAPIDatabasePostgreSQL + PostGIS via SupabaseAI / NLPGoogle Gemini APIOCRGoogle Cloud Vision APIMapsGoogle Maps Geocoding API, OpenStreetMap tilesNotificationsTwilio SMS + WhatsApp Business APIReal-timeSupabase websocket subscriptionsHostingVercel (frontend), Render (backend), Supabase (DB)
+| Layer | Technology |
+|---|---|
+| Frontend | React, Tailwind CSS, Leaflet.js |
+| Backend | Python, FastAPI |
+| Database | PostgreSQL + PostGIS via Supabase |
+| AI / NLP | Google Gemini API |
+| OCR | Google Cloud Vision API |
+| Maps | Google Maps Geocoding API, OpenStreetMap tiles |
+| Notifications | Twilio SMS + WhatsApp Business API |
+| Real-time | Supabase websocket subscriptions |
+| Hosting | Vercel (frontend), Render (backend), Supabase (DB) |
 
-📁 Project Structure
+---
+
+## 📁 Project Structure
+
+```
 volunteerconnect/
 ├── frontend/                  # React + Tailwind app
 │   ├── src/
@@ -89,30 +126,50 @@ volunteerconnect/
 │   └── schema.sql             # PostgreSQL + PostGIS table definitions
 │
 └── README.md
+```
 
-🚀 Getting Started
-Prerequisites
+---
 
-Node.js v18+
-Python 3.10+
-A Supabase project with PostGIS enabled
-API keys for: Gemini, Google Cloud Vision, Google Maps, Twilio
+## 🚀 Getting Started
 
-1. Clone the repository
-bashgit clone https://github.com/YOUR_USERNAME/volunteerconnect.git
+### Prerequisites
+
+- Node.js v18+
+- Python 3.10+
+- A [Supabase](https://supabase.com) project with PostGIS enabled
+- API keys for: Gemini, Google Cloud Vision, Google Maps, Twilio
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/volunteerconnect.git
 cd volunteerconnect
-2. Set up the database
+```
+
+### 2. Set up the database
+
 Run the schema file in your Supabase SQL editor:
-bash# In Supabase dashboard → SQL Editor, paste and run:
+
+```bash
+# In Supabase dashboard → SQL Editor, paste and run:
 database/schema.sql
-This creates the needs and volunteers tables with PostGIS spatial columns.
-3. Backend setup
-bashcd backend
+```
+
+This creates the `needs` and `volunteers` tables with PostGIS spatial columns.
+
+### 3. Backend setup
+
+```bash
+cd backend
 python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-Create a .env file in /backend:
-envSUPABASE_URL=your_supabase_project_url
+```
+
+Create a `.env` file in `/backend`:
+
+```env
+SUPABASE_URL=your_supabase_project_url
 SUPABASE_KEY=your_supabase_anon_key
 GEMINI_API_KEY=your_gemini_api_key
 GOOGLE_CLOUD_VISION_KEY=your_vision_api_key
@@ -121,30 +178,56 @@ TWILIO_ACCOUNT_SID=your_twilio_sid
 TWILIO_AUTH_TOKEN=your_twilio_auth_token
 TWILIO_PHONE_NUMBER=your_twilio_number
 TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
+```
+
 Start the backend server:
-bashuvicorn main:app --reload --port 8000
-4. Frontend setup
-bashcd frontend
+
+```bash
+uvicorn main:app --reload --port 8000
+```
+
+### 4. Frontend setup
+
+```bash
+cd frontend
 npm install
-Create a .env file in /frontend:
-envVITE_API_URL=http://localhost:8000
+```
+
+Create a `.env` file in `/frontend`:
+
+```env
+VITE_API_URL=http://localhost:8000
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-Start the frontend:
-bashnpm run dev
-The app will be running at http://localhost:5173.
+```
 
-🔌 API Reference
-POST /api/ingest
+Start the frontend:
+
+```bash
+npm run dev
+```
+
+The app will be running at `http://localhost:5173`.
+
+---
+
+## 🔌 API Reference
+
+### `POST /api/ingest`
 Accepts a community need from any input channel.
-Request body:
-json{
+
+**Request body:**
+```json
+{
   "source_channel": "form | whatsapp | sms | photo",
   "raw_text": "3 families in Dharavi need clean water, very urgent",
   "image_base64": "optional — for photo uploads only"
 }
-Response:
-json{
+```
+
+**Response:**
+```json
+{
   "id": "uuid",
   "location": "Dharavi, Mumbai",
   "latitude": 19.0390,
@@ -156,11 +239,16 @@ json{
   "status": "open",
   "created_at": "2024-01-15T10:30:00Z"
 }
+```
 
-GET /api/match?need_id={id}
+---
+
+### `GET /api/match?need_id={id}`
 Returns the top 3 matched volunteers for a given need.
-Response:
-json{
+
+**Response:**
+```json
+{
   "need_id": "uuid",
   "matches": [
     {
@@ -172,27 +260,42 @@ json{
     }
   ]
 }
+```
 
-POST /api/dispatch
+---
+
+### `POST /api/dispatch`
 Sends an SMS/WhatsApp notification to a matched volunteer.
-Request body:
-json{
+
+**Request body:**
+```json
+{
   "need_id": "uuid",
   "volunteer_id": "uuid"
 }
+```
 
-GET /api/stats
+---
+
+### `GET /api/stats`
 Returns live impact tracker numbers.
-Response:
-json{
+
+**Response:**
+```json
+{
   "needs_submitted": 142,
   "needs_resolved": 98,
   "volunteers_deployed": 67,
   "people_helped": 1240
 }
+```
 
-🗄️ Database Schema
-sql-- Needs table
+---
+
+## 🗄️ Database Schema
+
+```sql
+-- Needs table
 CREATE TABLE needs (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   location_text   TEXT,
@@ -223,39 +326,59 @@ CREATE TABLE volunteers (
 
 -- Enable PostGIS
 CREATE EXTENSION IF NOT EXISTS postgis;
+```
 
-🌐 Deployment
-Frontend — Vercel
-bashcd frontend
+---
+
+## 🌐 Deployment
+
+### Frontend — Vercel
+
+```bash
+cd frontend
 npm run build
 # Push to GitHub and connect repo to Vercel
 # Add environment variables in Vercel dashboard
-Backend — Render
+```
 
-Connect your GitHub repo to Render
-Set build command: pip install -r requirements.txt
-Set start command: uvicorn main:app --host 0.0.0.0 --port $PORT
-Add all .env variables in the Render environment settings
+### Backend — Render
 
+1. Connect your GitHub repo to [Render](https://render.com)
+2. Set build command: `pip install -r requirements.txt`
+3. Set start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+4. Add all `.env` variables in the Render environment settings
 
-🔮 Roadmap
+---
 
- Phase 2 — Predictive needs forecasting using seasonal + weather data
- Phase 3 — Multi-NGO collaboration layer (shared needs map)
- Phase 4 — Volunteer skill development tracking + training recommendations
- Phase 5 — Offline-first PWA for low-connectivity field workers
+## 🔮 Roadmap
 
+- [ ] **Phase 2** — Predictive needs forecasting using seasonal + weather data
+- [ ] **Phase 3** — Multi-NGO collaboration layer (shared needs map)
+- [ ] **Phase 4** — Volunteer skill development tracking + training recommendations
+- [ ] **Phase 5** — Offline-first PWA for low-connectivity field workers
 
-👥 Team
-NameRoleAyush KumarFull-stack development, AI integration[Teammate Name]Frontend, data pipeline, deployment
-Built at [Hackathon Name] · [Year]
+---
 
-📄 License
-This project is licensed under the MIT License. See LICENSE for details.
+## 👥 Team
 
-🙏 Acknowledgements
+| Name | Role |
+|---|---|
+| Ayush Kumar | Full-stack development, AI integration |
+| [Teammate Name] | Frontend, data pipeline, deployment |
 
-Google Gemini API for AI-powered field extraction
-Supabase for real-time database and PostGIS support
-Twilio for SMS and WhatsApp dispatch
-Leaflet.js for the open-source mapping layer
+Built at **[Hackathon Name]** · [Year]
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+## 🙏 Acknowledgements
+
+- [Google Gemini API](https://ai.google.dev/) for AI-powered field extraction
+- [Supabase](https://supabase.com/) for real-time database and PostGIS support
+- [Twilio](https://twilio.com/) for SMS and WhatsApp dispatch
+- [Leaflet.js](https://leafletjs.com/) for the open-source mapping layer
