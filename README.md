@@ -2,10 +2,13 @@
 # Demo Video link - https://youtu.be/1cp1YrcmxkI?si=RwgXJbUfTfLWqMPm
 
 ## For Trial Use:
-For Admin:                           For field Worker:                         For volunteer:
-username-piyush@gmail.com            username-ravi@gmail.com                   username-kishore@gmail.com
-password-piyush@234                  password-ravi@234                         password-kishore@234
+For Admin:     username = piyush@gmail.com   password=piyush@234
 
+For field Worker:    username = ravi@gmail.com          password = ravi@234            
+
+For volunteer:      username = kishore@gmail.com       password = kishore@234
+                               
+                                        
 > An AI-powered volunteer coordination system that connects community needs to the right volunteers — in real time.
 
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square)](https://fastapi.tiangolo.com/)
