@@ -36,15 +36,15 @@ The system is built on three independent layers:
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                   LAYER 1 — INGESTION                   │
-│  Web Form │ WhatsApp/SMS (Twilio) │ Photo Upload (OCR)  │
+│             Web Form │ WhatsApp/SMS (Twilio)            |
 │                    ↓ /api/ingest                        │
-│              Google Maps Geocoding API                  │
+│              nominatim.openstreetmap.org                │
 └──────────────────────┬──────────────────────────────────┘
                        ↓
 ┌─────────────────────────────────────────────────────────┐
 │                  LAYER 2 — INTELLIGENCE                 │
 │          Gemini API — free-text field extraction        │
-│         PostgreSQL + PostGIS (Supabase) — storage       │
+│         PostgreSQL + PostGIS (neon) — storage           │
 │   Urgency Scorer │ Volunteer Matcher │ Gap Detector     │
 └──────────────────────┬──────────────────────────────────┘
                        ↓
@@ -62,7 +62,6 @@ The system is built on three independent layers:
 ### Data Ingestion
 - **Multi-channel intake** — web form, WhatsApp bot, SMS, and paper survey photo upload
 - **AI field extraction** — Gemini API parses free-text in any language into structured JSON
-- **OCR for paper surveys** — Google Cloud Vision reads handwritten and printed surveys
 - **Auto geocoding** — Google Maps API converts location strings to lat/lng coordinates
 - **Language detection** — handles Hindi, English, and mixed-language inputs
 
@@ -86,14 +85,12 @@ The system is built on three independent layers:
 | Layer | Technology |
 |---|---|
 | Frontend | React, Tailwind CSS, Leaflet.js |
-| Backend | Python, FastAPI |
-| Database | PostgreSQL + PostGIS via Supabase |
+| Backend | express |
+| Database | PostgreSQL + PostGIS via neon |
 | AI / NLP | Google Gemini API |
-| OCR | Google Cloud Vision API |
-| Maps | Google Maps Geocoding API, OpenStreetMap tiles |
+| Maps | nominatim.openstreetmap.org Geocoding API, leafletjs |
 | Notifications | Twilio SMS + WhatsApp Business API |
-| Real-time | Supabase websocket subscriptions |
-| Hosting | Vercel (frontend), Render (backend), Supabase (DB) |
+| Hosting | Vercel (frontend and backend), Neon (DB) |
 
 ---
 
@@ -349,12 +346,12 @@ npm run build
 # Add environment variables in Vercel dashboard
 ```
 
-### Backend — Render
+### Backend — Vercel
 
-1. Connect your GitHub repo to [Render](https://render.com)
+1. Connect your GitHub repo to [Render](https://vercel.com)
 2. Set build command: `pip install -r requirements.txt`
 3. Set start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-4. Add all `.env` variables in the Render environment settings
+4. Add all `.env` variables in the vercel environment settings
 
 ---
 
@@ -384,6 +381,6 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 ## 🙏 Acknowledgements
 
 - [Google Gemini API](https://ai.google.dev/) for AI-powered field extraction
-- [Supabase](https://supabase.com/) for real-time database and PostGIS support
+- [neon](https://console.neon.com/) for real-time database and PostGIS support
 - [Twilio](https://twilio.com/) for SMS and WhatsApp dispatch
 - [Leaflet.js](https://leafletjs.com/) for the open-source mapping layer
