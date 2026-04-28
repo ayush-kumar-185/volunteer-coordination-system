@@ -1,11 +1,16 @@
 # VolunteerConnect 🤝
-Demo Video link - https://youtu.be/1cp1YrcmxkI?si=RwgXJbUfTfLWqMPm
+# Demo Video link - https://youtu.be/1cp1YrcmxkI?si=RwgXJbUfTfLWqMPm
+
+## For Trial Use:
+For Admin:                           For field Worker:                         For volunteer:
+username-piyush@gmail.com            username-ravi@gmail.com                   username-kishore@gmail.com
+password-piyush@234                  password-ravi@234                         password-kishore@234
 
 > An AI-powered volunteer coordination system that connects community needs to the right volunteers — in real time.
 
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=flat-square)](https://react.dev/)
-[![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E?style=flat-square)](https://supabase.com/)
+[![Neon](https://img.shields.io/badge/Database-neon-3ECF8E?style=flat-square)](https://console.neon.tech/)
 [![Gemini](https://img.shields.io/badge/AI-Gemini%20API-4285F4?style=flat-square)](https://ai.google.dev/)
 [![Twilio](https://img.shields.io/badge/Notifications-Twilio-F22F46?style=flat-square)](https://twilio.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
@@ -113,7 +118,6 @@ volunteerconnect/
 │   │   └── stats.py           # GET /api/stats — impact tracker
 │   ├── services/
 │   │   ├── gemini.py          # Gemini API field extraction
-│   │   ├── ocr.py             # Google Cloud Vision OCR
 │   │   ├── geocoding.py       # Google Maps Geocoding
 │   │   ├── urgency.py         # Urgency scoring algorithm
 │   │   ├── matcher.py         # PostGIS geospatial matching
@@ -137,8 +141,8 @@ volunteerconnect/
 
 - Node.js v18+
 - Python 3.10+
-- A [Supabase](https://supabase.com) project with PostGIS enabled
-- API keys for: Gemini, Google Cloud Vision, Google Maps, Twilio
+- A [Neon](https://console.neon.tech) project with PostGIS enabled
+- API keys for: Gemini, leafletjs, Twilio
 
 ### 1. Clone the repository
 
@@ -365,11 +369,8 @@ npm run build
 | Name | Role |
 |---|---|
 | Ayush Kumar | Full-stack development, AI integration |
-| [Teammate Name] | Frontend, data pipeline, deployment |
+| Aryan Singh | Frontend, data pipeline, deployment |
 
-Built at **[Hackathon Name]** · [Year]
-
----
 
 ## 📄 License
 
