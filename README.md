@@ -11,7 +11,7 @@ For volunteer:      username = kishore@gmail.com       password = kishore@234
                                         
 > An AI-powered volunteer coordination system that connects community needs to the right volunteers — in real time.
 
-[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square)](https://fastapi.tiangolo.com/)
+[![express](https://img.shields.io/badge/Backend-express-009688?style=flat-square)](https://express.com/)
 [![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=flat-square)](https://react.dev/)
 [![Neon](https://img.shields.io/badge/Database-neon-3ECF8E?style=flat-square)](https://console.neon.tech/)
 [![Gemini](https://img.shields.io/badge/AI-Gemini%20API-4285F4?style=flat-square)](https://ai.google.dev/)
